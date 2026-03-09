@@ -1,265 +1,728 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linear Regression Playground</title>
     <!-- Modern Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="app-container">
-        
-        <!-- Header -->
-        <header class="header">
-            <div>
-                <h1>Linear Regression Sandbox 🎯</h1>
-                <p id="scenario-subtitle" class="subtitle">An end-to-end masterclass: From raw data to AI forecasting.</p>
-            </div>
-            <!-- Progress Tracker -->
-            <div class="progress-tracker" style="font-size: 1.0rem; font-weight: 600; color: #64748b; display: flex; gap: 15px;">
-                <span id="nav-step-1" style="color: var(--primary-color);">1. Acquire Data</span> &rarr;
-                <span id="nav-step-2">2. Plot Data</span> &rarr;
-                <span id="nav-step-3">3. Train Model</span> &rarr;
-                <span id="nav-step-4">4. Forecast</span>
-            </div>
-        </header>
+      <!-- Header -->
+      <header class="header">
+        <div>
+          <h1>Linear Regression Sandbox 🎯</h1>
+          <p id="scenario-subtitle" class="subtitle">
+            An end-to-end masterclass: From raw data to AI forecasting.
+          </p>
+        </div>
+        <!-- Progress Tracker -->
+        <div
+          class="progress-tracker"
+          style="
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            display: flex;
+            gap: 15px;
+          "
+        >
+          <span id="nav-step-1" style="color: var(--primary-color)"
+            >1. Acquire Data</span
+          >
+          &rarr; <span id="nav-step-2">2. Plot Data</span> &rarr;
+          <span id="nav-step-3">3. Train Model</span> &rarr;
+          <span id="nav-step-4">4. Forecast</span>
+        </div>
+      </header>
 
-        <!-- ============================== -->
-        <!-- STEP 1: DATA ACQUISITION & ASSIGNMENT -->
-        <!-- ============================== -->
-        <div id="step-1" class="step-section">
-            <div class="panel glass-panel">
-                <h2 style="font-size: 1.6rem; color: #0f172a; margin-bottom: 0.5rem;">Step 1: Data Acquisition & Variable Assignment 📊</h2>
-                <p>Before predicting the future, a business analyst must gather historical data and define exactly what they want to achieve.</p>
-                
-                <div style="margin-top: 2rem; display: flex; gap: 15px; align-items: center; background: rgba(255, 255, 255, 0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                    <label style="font-weight: 800; color: #1e293b;">1. Select Database:</label>
-                    <select id="scenario-select" class="btn" style="background: #ffffff; color: #1a202c; border: 1px solid var(--border-color); flex-grow: 1;">
-                        <option value="marketing">Marketing Spend vs Sales ($)</option>
-                        <option value="training">Training Hours vs CSAT Score</option>
-                        <option value="temperature">Temperature (°C) vs Cold Drink Sales</option>
-                        <option value="price_demand">Product Price vs Demand (Negative Trend)</option>
-                        <option value="rd_revenue">R&D Investment vs New Product Revenue</option>
-                    </select>
-                    <button id="new-dataset-btn" class="btn primary-btn">Fetch Data via API</button>
+      <!-- ============================== -->
+      <!-- STEP 1: DATA ACQUISITION & ASSIGNMENT -->
+      <!-- ============================== -->
+      <div id="step-1" class="step-section">
+        <div class="panel glass-panel">
+          <h2 style="font-size: 1.6rem; color: #0f172a; margin-bottom: 0.5rem">
+            Step 1: Data Acquisition & Variable Assignment 📊
+          </h2>
+          <p>
+            Before predicting the future, a business analyst must gather
+            historical data and define exactly what they want to achieve.
+          </p>
+
+          <div
+            style="
+              margin-top: 2rem;
+              display: flex;
+              gap: 15px;
+              align-items: center;
+              background: rgba(255, 255, 255, 0.5);
+              padding: 1.5rem;
+              border-radius: 8px;
+              border: 1px solid var(--border-color);
+            "
+          >
+            <label style="font-weight: 800; color: #1e293b"
+              >1. Select Database:</label
+            >
+            <select
+              id="scenario-select"
+              class="btn"
+              style="
+                background: #ffffff;
+                color: #1a202c;
+                border: 1px solid var(--border-color);
+                flex-grow: 1;
+              "
+            >
+              <option value="marketing">Marketing Spend vs Sales ($)</option>
+              <option value="training">Training Hours vs CSAT Score</option>
+              <option value="temperature">
+                Temperature (°C) vs Cold Drink Sales
+              </option>
+              <option value="price_demand">
+                Product Price vs Demand (Negative Trend)
+              </option>
+              <option value="rd_revenue">
+                R&D Investment vs New Product Revenue
+              </option>
+            </select>
+            <button id="new-dataset-btn" class="btn primary-btn">
+              Fetch Data via API
+            </button>
+          </div>
+
+          <div
+            id="data-preview-section"
+            class="hidden"
+            style="margin-top: 2rem"
+          >
+            <h3 style="margin-bottom: 1rem">
+              Historical Data Preview (Top 5 Rows)
+            </h3>
+            <table
+              class="data-table"
+              style="
+                width: 100%;
+                text-align: left;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+              "
+            >
+              <thead style="background: #f1f5f9; color: #334155">
+                <tr>
+                  <th style="padding: 12px; border-bottom: 2px solid #e2e8f0">
+                    Row ID
+                  </th>
+                  <th
+                    id="table-col-x"
+                    style="padding: 12px; border-bottom: 2px solid #e2e8f0"
+                  >
+                    Variable 1
+                  </th>
+                  <th
+                    id="table-col-y"
+                    style="padding: 12px; border-bottom: 2px solid #e2e8f0"
+                  >
+                    Variable 2
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="data-table-body">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+
+            <div
+              style="
+                margin-top: 2rem;
+                background: rgba(79, 70, 229, 0.05);
+                padding: 1.5rem;
+                border-radius: 8px;
+                border-left: 4px solid var(--primary-color);
+              "
+            >
+              <h3 style="margin-bottom: 0.5rem; color: var(--primary-color)">
+                2. Define Your Variables
+              </h3>
+              <p>
+                To train an AI model, you must explicitly define the
+                <strong>Target (Dependent Variable - Y)</strong> you want to
+                predict, and the
+                <strong>Feature (Independent Variable - X)</strong> that drives
+                it.
+              </p>
+
+              <div style="display: flex; gap: 2rem; margin-top: 1.5rem">
+                <div style="flex: 1">
+                  <label style="font-weight: 600; color: #1e293b"
+                    >Independent Variable (X - The Driver):</label
+                  >
+                  <select
+                    id="select-x"
+                    class="btn"
+                    style="
+                      margin-top: 0.5rem;
+                      width: 100%;
+                      background: white;
+                      border: 1px solid var(--border-color);
+                    "
+                  >
+                    <option value="">-- Select Feature --</option>
+                    <option value="x" id="opt-x-1">Variable 1</option>
+                    <option value="y" id="opt-x-2">Variable 2</option>
+                  </select>
                 </div>
-
-                <div id="data-preview-section" class="hidden" style="margin-top: 2rem;">
-                    <h3 style="margin-bottom: 1rem;">Historical Data Preview (Top 5 Rows)</h3>
-                    <table class="data-table" style="width: 100%; text-align: left; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <thead style="background: #f1f5f9; color: #334155;">
-                            <tr>
-                                <th style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Row ID</th>
-                                <th id="table-col-x" style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Variable 1</th>
-                                <th id="table-col-y" style="padding: 12px; border-bottom: 2px solid #e2e8f0;">Variable 2</th>
-                            </tr>
-                        </thead>
-                        <tbody id="data-table-body">
-                            <!-- Populated via JS -->
-                        </tbody>
-                    </table>
-
-                    <div style="margin-top: 2rem; background: rgba(79, 70, 229, 0.05); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                        <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">2. Define Your Variables</h3>
-                        <p>To train an AI model, you must explicitly define the <strong>Target (Dependent Variable - Y)</strong> you want to predict, and the <strong>Feature (Independent Variable - X)</strong> that drives it.</p>
-                        
-                        <div style="display: flex; gap: 2rem; margin-top: 1.5rem;">
-                            <div style="flex: 1;">
-                                <label style="font-weight: 600; color: #1e293b;">Independent Variable (X - The Driver):</label>
-                                <select id="select-x" class="btn" style="margin-top:0.5rem; width: 100%; background: white; border: 1px solid var(--border-color);">
-                                    <option value="">-- Select Feature --</option>
-                                    <option value="x" id="opt-x-1">Variable 1</option>
-                                    <option value="y" id="opt-x-2">Variable 2</option>
-                                </select>
-                            </div>
-                            <div style="flex: 1;">
-                                <label style="font-weight: 600; color: #1e293b;">Dependent Variable (Y - The Goal):</label>
-                                <select id="select-y" class="btn" style="margin-top:0.5rem; width: 100%; background: white; border: 1px solid var(--border-color);">
-                                    <option value="">-- Select Target --</option>
-                                    <option value="x" id="opt-y-1">Variable 1</option>
-                                    <option value="y" id="opt-y-2">Variable 2</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 2rem;">
-                            <button id="btn-to-step-2" class="btn primary-btn" style="width: 100%; opacity: 0.5; cursor: not-allowed;" disabled>Ready! Proceed to Data Plotting &rarr;</button>
-                        </div>
-                    </div>
+                <div style="flex: 1">
+                  <label style="font-weight: 600; color: #1e293b"
+                    >Dependent Variable (Y - The Goal):</label
+                  >
+                  <select
+                    id="select-y"
+                    class="btn"
+                    style="
+                      margin-top: 0.5rem;
+                      width: 100%;
+                      background: white;
+                      border: 1px solid var(--border-color);
+                    "
+                  >
+                    <option value="">-- Select Target --</option>
+                    <option value="x" id="opt-y-1">Variable 1</option>
+                    <option value="y" id="opt-y-2">Variable 2</option>
+                  </select>
                 </div>
+              </div>
+
+              <div style="margin-top: 2rem">
+                <button
+                  id="btn-to-step-2"
+                  class="btn primary-btn"
+                  style="width: 100%; opacity: 0.5; cursor: not-allowed"
+                  disabled
+                >
+                  Ready! Proceed to Data Plotting &rarr;
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================== -->
+      <!-- STEP 2: MODEL TRAINING -->
+      <!-- ============================== -->
+      <!-- SHARED INTERACTIVE WORKSPACE (STEPS 2 & 3) -->
+      <div id="interactive-workspace" class="step-section hidden">
+        <div style="margin-bottom: 2rem">
+          <h2
+            id="workspace-title"
+            style="font-size: 1.6rem; color: #0f172a; margin-bottom: 0.5rem"
+          >
+            Step 2: Plot the Data 📌
+          </h2>
+          <p id="workspace-subtitle">
+            Before an AI model can be trained, you must structure the data into
+            a Scatter Plot.
+          </p>
         </div>
 
-        <!-- ============================== -->
-        <!-- STEP 2: MODEL TRAINING -->
-        <!-- ============================== -->
-        <!-- SHARED INTERACTIVE WORKSPACE (STEPS 2 & 3) -->
-        <div id="interactive-workspace" class="step-section hidden">
-            <div style="margin-bottom: 2rem;">
-                <h2 id="workspace-title" style="font-size: 1.6rem; color: #0f172a; margin-bottom: 0.5rem;">Step 2: Plot the Data 📌</h2>
-                <p id="workspace-subtitle">Before an AI model can be trained, you must structure the data into a Scatter Plot.</p>
+        <div class="main-content">
+          <!-- Left Column: Chart Area & Metrics -->
+          <div
+            class="left-column"
+            style="display: flex; flex-direction: column; gap: 1.5rem"
+          >
+            <!-- Chart Area -->
+            <div class="chart-section panel glass-panel">
+              <canvas id="regressionChart"></canvas>
             </div>
 
-            <div class="main-content">
-                <!-- Left Column: Chart Area & Metrics -->
-                <div class="left-column" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    
-                    <!-- Chart Area -->
-                    <div class="chart-section panel glass-panel">
-                        <canvas id="regressionChart"></canvas>
-                    </div>
+            <!-- Metrics & Score Panel -->
+            <div
+              id="metrics-panel-container"
+              class="panel metrics-panel glass-panel hidden"
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <h3 style="margin-bottom: 0">Evaluate Your Model 🏆</h3>
+                <div
+                  id="score-feedback"
+                  class="score-feedback hidden"
+                  style="margin-bottom: 0; padding: 0.4rem 0.8rem"
+                >
+                  Better Fit! 👏
+                </div>
+              </div>
 
-                    <!-- Metrics & Score Panel -->
-                    <div id="metrics-panel-container" class="panel metrics-panel glass-panel hidden">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h3 style="margin-bottom: 0;">Evaluate Your Model 🏆</h3>
-                            <div id="score-feedback" class="score-feedback hidden" style="margin-bottom: 0; padding: 0.4rem 0.8rem;">Better Fit! 👏</div>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="metric-card" style="margin-bottom: 0;">
-                                <div class="metric-title">Forecast Error (MSE) <br><span style="font-size: 0.8rem; font-weight:normal; opacity: 0.7;">(Minimize this)</span></div>
-                                <div id="mse-value" class="metric-number">--</div>
-                                <div class="metric-desc"><strong>Mean Squared Error:</strong> The mathematical penalty for inaccurate predictions.</div>
-                            </div>
-
-                            <div class="metric-card secondary" style="margin-bottom: 0;">
-                                <div class="metric-title">Significance Score (R²) <br><span style="font-size: 0.8rem; font-weight:normal; opacity: 0.7;">(Maximize to 100%)</span></div>
-                                <div id="r2-value" class="metric-number">--</div>
-                                <div class="metric-desc"><strong>R-Squared:</strong> What percentage of the outcome is statistically explained by your strategy?</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Educational Math Insights Container -->
-                        <div id="math-insights" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; font-size: 0.95rem; color: #475569;">
-                            <h4 style="color: #0f172a; margin-bottom: 0.5rem;">🧠 The Math Behind the Model</h4>
-                            <p style="margin-bottom: 1rem;">The linear regression trendline is calculated using this business formula:</p>
-                            <div style="background: rgba(79, 70, 229, 0.05); padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 1.5rem; border: 1px solid rgba(79, 70, 229, 0.1);">
-                                <strong style="font-size: 1.2rem; color: var(--primary-color);">Y = Target Outcome</strong><br>&nbsp;=&nbsp;<br><strong style="color: #0f172a;">(Slope × X) + Intercept</strong>
-                            </div>
-
-                            <ul style="list-style-type: none; padding-left: 0;">
-                                <li style="margin-bottom: 1rem;">
-                                    <strong><span style="color: #ef4444;">MSE (Forecast Error):</span> Why approach 0?</strong><br>
-                                    MSE mathematically squares every prediction error (the red lines on the chart). When MSE approaches <strong style="color: #0f172a;">0</strong>, it means your trendline is touching every single data point perfectly—zero forecast error! If the number is huge, your model is practically guessing.
-                                </li>
-                                <li>
-                                    <strong><span style="color: #8b5cf6;">R² (Significance Score):</span> Why 100%?</strong><br>
-                                    If R² = <strong style="color: #0f172a;">100%</strong>, it means 100% of the movement in your Goal (Y) is perfectly predicted by your Driver (X). If R² = <strong style="color: #0f172a;">0%</strong>, there is no mathematical relationship at all. Aim for >80% to prove significance.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem"
+              >
+                <div class="metric-card" style="margin-bottom: 0">
+                  <div class="metric-title">
+                    Forecast Error (MSE) <br /><span
+                      style="
+                        font-size: 0.8rem;
+                        font-weight: normal;
+                        opacity: 0.7;
+                      "
+                      >(Minimize this)</span
+                    >
+                  </div>
+                  <div id="mse-value" class="metric-number">--</div>
+                  <div class="metric-desc">
+                    <strong>Mean Squared Error:</strong> The mathematical
+                    penalty for inaccurate predictions.
+                  </div>
                 </div>
 
-                <!-- Right Column: Controls -->
-                <div class="controls-section">
-                    
-                    <!-- STEP 2 CONTROLS (Plotting Data) -->
-                    <div id="step-2-controls">
-                        <div class="panel instructions-panel glass-panel">
-                            <h3>Your Objective 🕵️‍♀️</h3>
-                            <p>To understand the math behind Scatter Plots, we have plotted most of the historical data for you.</p>
-                            <p><strong>Your Goal:</strong> Manually plot the final 3 data points onto the graph right now by clicking at their correct X and Y coordinates. We'll automatically snap them into place if you are close!</p>
-                            <div style="background: rgba(79, 70, 229, 0.05); padding: 12px; margin-top: 15px; border-radius: 4px; border-left: 4px solid var(--primary-color);">
-                                <p style="font-weight: 800; color: var(--primary-color); margin-bottom: 10px;">Missing Data Points (Pending):</p>
-                                <ul id="missing-points-list" style="margin-left: 20px; color: #334155; font-size: 1.1rem; line-height: 1.6;">
-                                    <!-- Injected by JS -->
-                                </ul>
-                            </div>
-                            <p id="plot-error-msg" class="hidden" style="color: #ef4444; font-weight: 600; margin-top: 15px; text-align: center;">❌ Way off! Look closely at the X and Y axes.</p>
-                        </div>
-                    </div>
+                <div class="metric-card secondary" style="margin-bottom: 0">
+                  <div class="metric-title">
+                    Significance Score (R²) <br /><span
+                      style="
+                        font-size: 0.8rem;
+                        font-weight: normal;
+                        opacity: 0.7;
+                      "
+                      >(Maximize to 100%)</span
+                    >
+                  </div>
+                  <div id="r2-value" class="metric-number">--</div>
+                  <div class="metric-desc">
+                    <strong>R-Squared:</strong> What percentage of the outcome
+                    is statistically explained by your strategy?
+                  </div>
+                </div>
+              </div>
 
-                    <!-- STEP 3 CONTROLS (Model Training) -->
-                    <div id="step-3-controls" class="hidden">
-                    
-                        <!-- Game Instructions -->
-                        <div class="panel instructions-panel glass-panel">
-                            <h3>Your Objective 🕵️‍♀️</h3>
-                            <p id="instruction-goal"><strong>Your Goal:</strong> Adjust the trendline to perfectly fit the historical data points so you can confidently forecast the future.</p>
-                            <p><strong>The Red Lines (Prediction Error):</strong> These represent how wrong your forecast is compared to actual past results. By moving the sliders, you are physically adjusting your business model to minimize this error!</p>
-                            <div style="background: rgba(79, 70, 229, 0.05); border-left: 4px solid var(--primary-color); padding: 12px; margin-top: 15px; border-radius: 4px;">
-                                <p style="color: var(--primary-color); font-weight: 800; margin-bottom: 5px; font-size: 0.95rem;">💡 Test a Data Anomaly</p>
-                                <p style="font-size: 0.9rem; margin-bottom: 0; color: #475569;">Click on the chart to add an "Outlier" (like a freak event). Watch how one bad data point can completely distort an AI model and ruin your strategy!</p>
-                            </div>
-                        </div>
+              <!-- Educational Math Insights Container -->
+              <div
+                id="math-insights"
+                style="
+                  margin-top: 1.5rem;
+                  border-top: 1px solid var(--border-color);
+                  padding-top: 1.5rem;
+                  font-size: 0.95rem;
+                  color: #475569;
+                "
+              >
+                <h4 style="color: #0f172a; margin-bottom: 0.5rem">
+                  🧠 The Math Behind the Model
+                </h4>
+                <p style="margin-bottom: 1rem">
+                  The linear regression trendline is calculated using this
+                  business formula:
+                </p>
+                <div
+                  style="
+                    background: rgba(79, 70, 229, 0.05);
+                    padding: 12px;
+                    border-radius: 6px;
+                    text-align: center;
+                    margin-bottom: 1.5rem;
+                    border: 1px solid rgba(79, 70, 229, 0.1);
+                  "
+                >
+                  <strong style="font-size: 1.2rem; color: var(--primary-color)"
+                    >Y = Target Outcome</strong
+                  ><br />&nbsp;=&nbsp;<br /><strong style="color: #0f172a"
+                    >(Slope × X) + Intercept</strong
+                  >
+                </div>
 
-                        <!-- Sliders Panel -->
-                        <div class="panel sliders-panel glass-panel">
-                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
-                                <h3 style="margin-bottom: 0;">Set Your Business Assumptions ⚙️</h3>
-                                <button id="auto-fit-btn" class="btn" style="background: #f1f5f9; color: var(--primary-color); border: 1px solid #cbd5e1; font-size: 0.85rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer;">🪄 Auto-Fit Model</button>
-                            </div>
-                            
-                            <div class="slider-group">
-                                <div class="slider-header tooltip-container">
-                                    <label id="label-intercept" for="interceptSlider">Fixed Baseline (Intercept)</label>
-                                    <span id="tooltip-intercept" class="tooltip">Business Meaning: What is our guaranteed baseline result even if we take no action? (Moves the line Up/Down)</span>
-                                    <span id="interceptValue" class="value-badge">0</span>
-                                </div>
-                                <input type="range" id="interceptSlider" min="-100" max="250" step="1" value="0">
-                            </div>
-
-                            <div class="slider-group">
-                                <div class="slider-header tooltip-container">
-                                    <label id="label-slope" for="slopeSlider">Strategic Impact (Slope)</label>
-                                    <span id="tooltip-slope" class="tooltip">Business Meaning: The Return on Investment (ROI). How much extra result do we get for each unit of effort? (Tilts the line)</span>
-                                    <span id="slopeValue" class="value-badge">0</span>
-                                </div>
-                                <input type="range" id="slopeSlider" min="-20" max="25" step="0.1" value="0">
-                            </div>
-
-                            <div id="slider-hints" class="hidden" style="margin-top: 15px; padding: 12px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; font-size: 0.95rem; color: #b45309;">
-                                <strong>🤖 AI Assistant Hint:</strong> <span id="hint-text">Move the sliders to fit the data.</span>
-                            </div>
-                        </div>
-
-                        <!-- Conclusion Panel -->
-                        <div class="panel conclusion-panel glass-panel" style="margin-top: 0; margin-bottom: 1.5rem;">
-                            <h3>💡 Executive Summary</h3>
-                            <p id="learning-conclusion"><strong>Adjust your assumptions above to unlock the business conclusion!</strong></p>
-                        </div> 
-                    </div> <!-- End step-3-controls -->
-                </div> <!-- End controls-section -->
+                <ul style="list-style-type: none; padding-left: 0">
+                  <li style="margin-bottom: 1rem">
+                    <strong
+                      ><span style="color: #ef4444">MSE (Forecast Error):</span>
+                      Why approach 0?</strong
+                    ><br />
+                    MSE mathematically squares every prediction error (the red
+                    lines on the chart). When MSE approaches
+                    <strong style="color: #0f172a">0</strong>, it means your
+                    trendline is touching every single data point perfectly—zero
+                    forecast error! If the number is huge, your model is
+                    practically guessing.
+                  </li>
+                  <li>
+                    <strong
+                      ><span style="color: #8b5cf6"
+                        >R² (Significance Score):</span
+                      >
+                      Why 100%?</strong
+                    ><br />
+                    If R² = <strong style="color: #0f172a">100%</strong>, it
+                    means 100% of the movement in your Goal (Y) is perfectly
+                    predicted by your Driver (X). If R² =
+                    <strong style="color: #0f172a">0%</strong>, there is no
+                    mathematical relationship at all. Aim for >80% to prove
+                    significance.
+                  </li>
+                </ul>
+              </div>
             </div>
-            
-            <div style="margin-top: 2rem;">
-                <button id="btn-workspace-next" class="btn primary-btn" style="width: 100%; font-size: 1.2rem; padding: 1.2rem; font-weight: 800; opacity: 0.5; cursor: not-allowed;" disabled>Plot all points to proceed</button>
+          </div>
+
+          <!-- Right Column: Controls -->
+          <div class="controls-section">
+            <!-- STEP 2 CONTROLS (Plotting Data) -->
+            <div id="step-2-controls">
+              <div class="panel instructions-panel glass-panel">
+                <h3>Your Objective 🕵️‍♀️</h3>
+                <p>
+                  To understand the math behind Scatter Plots, we have plotted
+                  most of the historical data for you.
+                </p>
+                <p>
+                  <strong>Your Goal:</strong> Manually plot the final 3 data
+                  points onto the graph right now by clicking at their correct X
+                  and Y coordinates. We'll automatically snap them into place if
+                  you are close!
+                </p>
+                <div
+                  style="
+                    background: rgba(79, 70, 229, 0.05);
+                    padding: 12px;
+                    margin-top: 15px;
+                    border-radius: 4px;
+                    border-left: 4px solid var(--primary-color);
+                  "
+                >
+                  <p
+                    style="
+                      font-weight: 800;
+                      color: var(--primary-color);
+                      margin-bottom: 10px;
+                    "
+                  >
+                    Missing Data Points (Pending):
+                  </p>
+                  <ul
+                    id="missing-points-list"
+                    style="
+                      margin-left: 20px;
+                      color: #334155;
+                      font-size: 1.1rem;
+                      line-height: 1.6;
+                    "
+                  >
+                    <!-- Injected by JS -->
+                  </ul>
+                </div>
+                <p
+                  id="plot-error-msg"
+                  class="hidden"
+                  style="
+                    color: #ef4444;
+                    font-weight: 600;
+                    margin-top: 15px;
+                    text-align: center;
+                  "
+                >
+                  ❌ Way off! Look closely at the X and Y axes.
+                </p>
+              </div>
             </div>
+
+            <!-- STEP 3 CONTROLS (Model Training) -->
+            <div id="step-3-controls" class="hidden">
+              <!-- Game Instructions -->
+              <div class="panel instructions-panel glass-panel">
+                <h3>Your Objective 🕵️‍♀️</h3>
+                <p id="instruction-goal">
+                  <strong>Your Goal:</strong> Adjust the trendline to perfectly
+                  fit the historical data points so you can confidently forecast
+                  the future.
+                </p>
+                <p>
+                  <strong>The Red Lines (Prediction Error):</strong> These
+                  represent how wrong your forecast is compared to actual past
+                  results. By moving the sliders, you are physically adjusting
+                  your business model to minimize this error!
+                </p>
+                <div
+                  style="
+                    background: rgba(79, 70, 229, 0.05);
+                    border-left: 4px solid var(--primary-color);
+                    padding: 12px;
+                    margin-top: 15px;
+                    border-radius: 4px;
+                  "
+                >
+                  <p
+                    style="
+                      color: var(--primary-color);
+                      font-weight: 800;
+                      margin-bottom: 5px;
+                      font-size: 0.95rem;
+                    "
+                  >
+                    💡 Test a Data Anomaly
+                  </p>
+                  <p
+                    style="font-size: 0.9rem; margin-bottom: 0; color: #475569"
+                  >
+                    Click on the chart to add an "Outlier" (like a freak event).
+                    Watch how one bad data point can completely distort an AI
+                    model and ruin your strategy!
+                  </p>
+                </div>
+              </div>
+
+              <!-- Sliders Panel -->
+              <div class="panel sliders-panel glass-panel">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  <h3 style="margin-bottom: 0">
+                    Set Your Business Assumptions ⚙️
+                  </h3>
+                  <button
+                    id="auto-fit-btn"
+                    class="btn"
+                    style="
+                      background: #f1f5f9;
+                      color: var(--primary-color);
+                      border: 1px solid #cbd5e1;
+                      font-size: 0.85rem;
+                      padding: 0.4rem 0.8rem;
+                      border-radius: 6px;
+                      cursor: pointer;
+                    "
+                  >
+                    🪄 Auto-Fit Model
+                  </button>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header tooltip-container">
+                    <label id="label-intercept" for="interceptSlider"
+                      >Fixed Baseline (Intercept)</label
+                    >
+                    <span id="tooltip-intercept" class="tooltip"
+                      >Business Meaning: What is our guaranteed baseline result
+                      even if we take no action? (Moves the line Up/Down)</span
+                    >
+                    <span id="interceptValue" class="value-badge">0</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="interceptSlider"
+                    min="-100"
+                    max="250"
+                    step="1"
+                    value="0"
+                  />
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header tooltip-container">
+                    <label id="label-slope" for="slopeSlider"
+                      >Strategic Impact (Slope)</label
+                    >
+                    <span id="tooltip-slope" class="tooltip"
+                      >Business Meaning: The Return on Investment (ROI). How
+                      much extra result do we get for each unit of effort?
+                      (Tilts the line)</span
+                    >
+                    <span id="slopeValue" class="value-badge">0</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="slopeSlider"
+                    min="-20"
+                    max="25"
+                    step="0.1"
+                    value="0"
+                  />
+                </div>
+
+                <div
+                  id="slider-hints"
+                  class="hidden"
+                  style="
+                    margin-top: 15px;
+                    padding: 12px;
+                    background: #fffbeb;
+                    border-left: 4px solid #f59e0b;
+                    border-radius: 4px;
+                    font-size: 0.95rem;
+                    color: #b45309;
+                  "
+                >
+                  <strong>🤖 AI Assistant Hint:</strong>
+                  <span id="hint-text">Move the sliders to fit the data.</span>
+                </div>
+              </div>
+
+              <!-- Conclusion Panel -->
+              <div
+                class="panel conclusion-panel glass-panel"
+                style="margin-top: 0; margin-bottom: 1.5rem"
+              >
+                <h3>💡 Executive Summary</h3>
+                <p id="learning-conclusion">
+                  <strong
+                    >Adjust your assumptions above to unlock the business
+                    conclusion!</strong
+                  >
+                </p>
+              </div>
+            </div>
+            <!-- End step-3-controls -->
+          </div>
+          <!-- End controls-section -->
         </div>
 
-        <!-- ============================== -->
-        <!-- STEP 4: BUSINESS FORECASTING -->
-        <!-- ============================== -->
-        <div id="step-4" class="step-section hidden">
-            <div class="panel glass-panel" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 3rem 2rem;">
-                 <h2 style="font-size: 2rem; color: #0f172a; margin-bottom: 1rem;">Step 4: Deploy Forecasting Model 🚀</h2>
-                 <p style="font-size: 1.1rem;">Your AI model has been trained and validated with a high degree of statistical significance. Now it's time to test your strategy in the real world.</p>
-                 
-                 <div style="margin: 3rem 0; background: #f8fafc; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                      <label id="forecast-label-x" style="font-weight: 800; font-size: 1.3rem; display: block; margin-bottom: 1rem; color: var(--primary-color);">If we set [X] to:</label>
-                      <input type="number" id="forecast-input-x" class="btn" style="font-size: 1.5rem; width: 200px; text-align: center; border: 2px solid var(--primary-color); background: white; color: #0f172a;" value="0">
-                      <br><br>
-                      <button id="forecast-btn" class="btn primary-btn" style="font-size: 1.2rem; padding: 1rem 2rem;">Run Machine Learning Forecast</button>
-                 </div>
-                 
-                 <div class="metric-card" style="box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 2px solid #e2e8f0; background: white;">
-                      <div class="metric-title" id="forecast-label-y" style="font-size: 1.2rem;">Predicted Outcome [Y]:</div>
-                      <div id="forecast-output-y" class="metric-number" style="font-size: 4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.05);">--</div>
-                 </div>
-
-                 <button id="btn-restart" class="btn" style="margin-top: 2rem; border: 1px solid var(--border-color); background: #f1f5f9; color: #475569;">&larr; Start Over with New Scenario</button>
-            </div>
+        <div style="margin-top: 2rem">
+          <button
+            id="btn-workspace-next"
+            class="btn primary-btn"
+            style="
+              width: 100%;
+              font-size: 1.2rem;
+              padding: 1.2rem;
+              font-weight: 800;
+              opacity: 0.5;
+              cursor: not-allowed;
+            "
+            disabled
+          >
+            Plot all points to proceed
+          </button>
         </div>
+      </div>
+
+      <!-- ============================== -->
+      <!-- STEP 4: BUSINESS FORECASTING -->
+      <!-- ============================== -->
+      <div id="step-4" class="step-section hidden">
+        <div
+          class="panel glass-panel"
+          style="
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 3rem 2rem;
+          "
+        >
+          <h2 style="font-size: 2rem; color: #0f172a; margin-bottom: 1rem">
+            Step 4: Deploy Forecasting Model 🚀
+          </h2>
+          <p style="font-size: 1.1rem">
+            Your AI model has been trained and validated with a high degree of
+            statistical significance. Now it's time to test your strategy in the
+            real world.
+          </p>
+
+          <div
+            style="
+              margin: 3rem 0;
+              background: #f8fafc;
+              padding: 2rem;
+              border-radius: 12px;
+              border: 1px solid var(--border-color);
+            "
+          >
+            <label
+              id="forecast-label-x"
+              style="
+                font-weight: 800;
+                font-size: 1.3rem;
+                display: block;
+                margin-bottom: 1rem;
+                color: var(--primary-color);
+              "
+              >If we set [X] to:</label
+            >
+            <input
+              type="number"
+              id="forecast-input-x"
+              class="btn"
+              style="
+                font-size: 1.5rem;
+                width: 200px;
+                text-align: center;
+                border: 2px solid var(--primary-color);
+                background: white;
+                color: #0f172a;
+              "
+              value="0"
+            />
+            <br /><br />
+            <button
+              id="forecast-btn"
+              class="btn primary-btn"
+              style="font-size: 1.2rem; padding: 1rem 2rem"
+            >
+              Run Machine Learning Forecast
+            </button>
+          </div>
+
+          <div
+            class="metric-card"
+            style="
+              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+              border: 2px solid #e2e8f0;
+              background: white;
+            "
+          >
+            <div
+              class="metric-title"
+              id="forecast-label-y"
+              style="font-size: 1.2rem"
+            >
+              Predicted Outcome [Y]:
+            </div>
+            <div
+              id="forecast-output-y"
+              class="metric-number"
+              style="
+                font-size: 4rem;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+              "
+            >
+              --
+            </div>
+          </div>
+
+          <button
+            id="btn-restart"
+            class="btn"
+            style="
+              margin-top: 2rem;
+              border: 1px solid var(--border-color);
+              background: #f1f5f9;
+              color: #475569;
+            "
+          >
+            &larr; Start Over with New Scenario
+          </button>
+        </div>
+      </div>
     </div>
-    
+
     <script src="js/app.js?v=5"></script>
-</body>
+  </body>
 </html>
